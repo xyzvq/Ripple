@@ -1,38 +1,36 @@
 .App {
-  text-align: center;
+  position: relative; /* Needed for proper layering */
+  /* height: 100vh; */
+  overflow: hidden; /* Prevents scrolling */
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* The container for both components */
+.relative-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* The ThreeScene component */
+.three-scene {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1; /* Behind the Sliders */
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+/* The Sliders component */
+.sliders {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2; /* On top of the ThreeScene */
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.MuiTypography-root {
+    color: white !important;
 }

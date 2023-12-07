@@ -1,24 +1,30 @@
-import logo from './logo.svg';
+import React from 'react';
+import ThreeScene from './components/ThreeScene';
+import { useState } from 'react';
 import './App.css';
 
-function App() {
+const App = () =>{
+    const [xMultiplier, setXMultiplier] = useState(10.0);
+    const [yMultiplier, setYMultiplier] = useState(10.0);
+    const [rippleSpeed, setRippleSpeed] = useState(0.75);
+    const [noiseStrength, setNoiseStrength] = useState(2.0);
+    
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="App">
+          <ThreeScene 
+              xMultiplier={xMultiplier}
+              yMultiplier={yMultiplier}
+              rippleSpeed={rippleSpeed}
+              noiseStrength={noiseStrength}
+              setXMultiplier={setXMultiplier}
+              setYMultiplier={setYMultiplier}
+              setRippleSpeed={setRippleSpeed}
+              setNoiseStrength={setNoiseStrength}
+          />
+
+          
+      </div>
   );
 }
 

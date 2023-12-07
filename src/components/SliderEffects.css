@@ -1,0 +1,56 @@
+@keyframes waveAnimation {
+    0%, 100% {
+        transform: rotateX(0deg) rotateY(0deg) translateZ(0);
+    }
+    25% {
+        transform: rotateX(20deg) rotateY(-20deg) translateZ(50px);
+    }
+    50% {
+        transform: rotateX(-20deg) rotateY(20deg) translateZ(-50px);
+    }
+    75% {
+        transform: rotateX(20deg) rotateY(-20deg) translateZ(50px);
+    }
+}
+
+@keyframes rollingWave {
+    0%, 100% {
+        transform: rotate3d(4, 1, 0, 0deg) translateX(0);
+    }
+    /* 25% {
+        transform: rotate3d(0, 1, 0, 90deg) translateX(0%);
+    } */
+    50% {
+        transform: rotate3d(0, 1, 0, 180deg) translateX(0%);
+    }
+    /* 75% {
+        transform: rotate3d(0, 1, 0, 270deg) translateX(0%);
+    } */
+}
+
+.rolling-wave {
+    width: 100px;
+    height: 100px;
+    background-color: black;
+    /* Enable 3D space for transformations */
+    transform-style: preserve-3d;
+    /* Apply the animation */
+    animation: rollingWave 4s infinite linear;
+}
+
+
+
+.wave-shape {
+    width: 400px;
+    height: 400px;
+    background-color: black;
+    /* Enable 3D space for transformations */
+    transform-style: preserve-3d;
+    /* Apply the animation */
+    animation: waveAnimation 3s infinite ease-in-out;
+}
+
+
+.wave-shape:hover {
+    animation: waveAnimation 3s infinite ease-in-out;
+}
