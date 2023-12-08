@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
-import { Button, } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 class ColorButton extends React.Component {
   constructor(props) {
@@ -50,13 +50,15 @@ class ColorButton extends React.Component {
 
   render() {
     const { r, g, b, a } = this.state.color;
-    const backgroundColor = `rgba(${r*255}, ${g*255}, ${b*255}, ${1})`;
+    const backgroundColor = `rgba(${r}, ${g}, ${b}, ${1})`;
     const hexColor = this.rgbToHex(r, g, b);
     const textColor = this.getTextColor(r, g, b);
 
     const popover = {
       position: 'absolute',
-      zIndex: '2',
+      zIndex: '3',
+      top: '14%',
+      left: '20%',
     }
     const cover = {
       position: 'fixed',
@@ -68,8 +70,8 @@ class ColorButton extends React.Component {
 
     return (
       <div>
-        <Button onClick={this.handleClick} style={{ backgroundColor: backgroundColor, color: backgroundColor }} size="small" sx={{ height: '30px', width: '100%'}}>
-          {/* <Typography>COLOR</Typography> */}
+        <Button onClick={this.handleClick} style={{ backgroundColor: backgroundColor, }} size="small" sx={{ height: '30px', width: '100%'}}>
+          <Typography>COLOR</Typography>
         </Button>
         {this.state.displayColorPicker ? (
           <div style={popover}>

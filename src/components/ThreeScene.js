@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { vertexShader, fragmentShader } from './Shader';
 import ColorButton from './ColorButton';
 import Sliders from './Sliders';
-import {Switch, Typography, FormControlLabel, Box, Grid , Stack, Divider} from '@mui/material';
+import {Switch, Typography, FormControlLabel, Box, Grid , Stack, Divider, useMediaQuery} from '@mui/material';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 
 const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, rippleSpeed, setRippleSpeed, noiseStrength, setNoiseStrength,}) => {
@@ -21,6 +21,8 @@ const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, 
 
     const color1 = new THREE.Color(color1Red, color1Green, color1Blue);
     const color2 = new THREE.Color(color2Red, color2Green, color2Blue);
+
+    const isMobile = useMediaQuery('(max-width:600px)');
 
     const [expanded, setExpanded] = useState(true); 
 
@@ -141,7 +143,10 @@ const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, 
             mesh.material.uniforms.uColor2Green.value = color2Green;
             mesh.material.uniforms.uColor2Blue.value =  color2Blue;
 
-            bendableSquareRef.current.material.wireframe = wireFrame;
+            mesh.material.wireframe = wireFrame;
+
+            mesh.material.needsUpdate = true;
+
 
         }
     }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame ]);
@@ -157,9 +162,7 @@ const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, 
                 top: '5%', 
                 left: '1%', 
                 zIndex: 2, 
-                // width: '22.5%', 
-                // height: '90%',
-                width: expanded ? '30%' : '43px',  // Expanded or icon size
+                width: expanded ? isMobile ? '96%' : '30%' : '43px',  // Expanded or icon size
                 height: expanded ? '90%' : '43px',   // Expanded or icon size
                 display: 'flex',
                 flexDirection: 'column',
@@ -167,7 +170,7 @@ const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, 
                 borderRadius: '12px',
                 backgroundColor: 'rgba(0, 0, 0, 0.5)',
                 transition: 'width 0.5s, height 0.5s',  // Smooth transition for width and height
-                overflow: 'hidden'
+                overflow: isMobile ? 'scroll' : 'hidden',
                 }}
             >
                 <TuneOutlinedIcon 
@@ -203,14 +206,14 @@ const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, 
                                 <Typography variant='BUTTON TEXT'>Colour 1</Typography>
                             </Grid>
                             <Grid item xs={12} sm={12} md={6}>
-                                <ColorButton color={color1} handleColorChange={handleColor1Change}/>
+                                <ColorButton color={color1} onChange={handleColor1Change}/>
                             </Grid>
 
                             <Grid item xs={12} sm={12} md={6}>
                                 <Typography variant='BUTTON TEXT'>Colour 2</Typography>
                             </Grid>
                             <Grid item xs={12} sm={12} md={6}>
-                                <ColorButton color={color2} handleColorChange={handleColor2Change}/>
+                                <ColorButton color={color2} onChange={handleColor2Change}/>
                             </Grid>
                             <Grid item xs={12} sm={12} md={6}>
                                  <FormControlLabel
@@ -220,9 +223,11 @@ const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, 
                                                 '& .MuiSwitch-track': {
                                                     backgroundColor: 'white', 
                                                     opacity: 0.4,
-                                                },}}
+                                                },
+                                            }}
                                         />
                                     }
+                                     label="Wireframe"
                                 />
                             </Grid>
                         </Grid>

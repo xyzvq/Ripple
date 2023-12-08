@@ -53,7 +53,7 @@ void main() {
     vec3 color2 = vec3(uColor2Red, uColor2Green, uColor2Blue); 
 
     // For a gradient between two colors:
-    vec3 gradientColor = mix(color1, color2, (sin(vRipple) + 0.5) / 2.0);
+    vec3 gradientColor = mix(color1, color2, (sin(vRipple) + 0.4) / 2.0);
 
     vec3 light = vec3(0.0, 0.0, 0.0);
     light = normalize(light);
