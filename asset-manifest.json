@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/ShaderFun/static/css/main.d4f8c80d.css",
-    "main.js": "/ShaderFun/static/js/main.c6a0822f.js",
+    "main.js": "/ShaderFun/static/js/main.c68e707e.js",
     "static/js/787.25743bb5.chunk.js": "/ShaderFun/static/js/787.25743bb5.chunk.js",
     "index.html": "/ShaderFun/index.html",
     "main.d4f8c80d.css.map": "/ShaderFun/static/css/main.d4f8c80d.css.map",
-    "main.c6a0822f.js.map": "/ShaderFun/static/js/main.c6a0822f.js.map",
+    "main.c68e707e.js.map": "/ShaderFun/static/js/main.c68e707e.js.map",
     "787.25743bb5.chunk.js.map": "/ShaderFun/static/js/787.25743bb5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.d4f8c80d.css",
-    "static/js/main.c6a0822f.js"
+    "static/js/main.c68e707e.js"
   ]
 }
