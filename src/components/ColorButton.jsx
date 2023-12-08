@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChromePicker } from 'react-color';
-import { Button, Typography} from '@mui/material';
+import { Button, } from '@mui/material';
 
 class ColorButton extends React.Component {
   constructor(props) {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Slider, Stack, Typography, Grid } from '@mui/material';
-import ColorButton from './ColorButton'; // Assuming this is the correct import for your ColorButton
 
 const Sliders = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, rippleSpeed, setRippleSpeed, noiseStrength, setNoiseStrength, color1 }) => {
     return (
