@@ -162,7 +162,7 @@ const ThreeScene = ({ xMultiplier, setXMultiplier, yMultiplier, setYMultiplier, 
                 top: '5%', 
                 left: '1%', 
                 zIndex: 2, 
-                width: expanded ? isMobile ? '96%' : '30%' : '43px',  // Expanded or icon size
+                width: expanded ? isMobile ? '96%' : '20%' : '43px',  // Expanded or icon size
                 height: expanded ? '90%' : '43px',   // Expanded or icon size
                 display: 'flex',
                 flexDirection: 'column',

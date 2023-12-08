@@ -70,8 +70,7 @@ class ColorButton extends React.Component {
 
     return (
       <div>
-        <Button onClick={this.handleClick} style={{ backgroundColor: backgroundColor, }} size="small" sx={{ height: '30px', width: '100%'}}>
-          <Typography>COLOR</Typography>
+        <Button onClick={this.handleClick} style={{ backgroundColor: backgroundColor, }} size="small" sx={{ height: '30px', width: '100%', border: '1px solid '}}>
         </Button>
         {this.state.displayColorPicker ? (
           <div style={popover}>
