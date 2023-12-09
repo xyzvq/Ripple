@@ -32,7 +32,7 @@ const ControlPanel = ({
                 top: '5%',  
                 left: '1%',  
                 zIndex: 2,  
-                width: expanded ? isMobile ? '96%' : '22%' : '42px', 
+                width: expanded ? isMobile ? '90%' : '22%' : '42px', 
                 height: expanded ? '90%' : '42px',
                 flexDirection: 'column', 
                 border: '2px solid rgba(100, 100, 200, 0.4)', 
