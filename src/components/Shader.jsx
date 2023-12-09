@@ -34,6 +34,7 @@ uniform float uColor1Blue;
 uniform float uColor2Red;
 uniform float uColor2Green;
 uniform float uColor2Blue;
+uniform float uGradientBlend;
 
 // uniform float uColor1;
 // uniform float uColor2;
@@ -53,7 +54,7 @@ void main() {
     vec3 color2 = vec3(uColor2Red, uColor2Green, uColor2Blue); 
 
     // For a gradient between two colors:
-    vec3 gradientColor = mix(color1, color2, (sin(vRipple) + 0.4) / 2.0);
+    vec3 gradientColor = mix(color1, color2, (sin(vRipple) + 0.5) / uGradientBlend);
 
     vec3 light = vec3(0.0, 0.0, 0.0);
     light = normalize(light);
