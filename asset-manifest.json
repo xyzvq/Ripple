@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/ShaderFun/static/css/main.6de387c3.css",
-    "main.js": "/ShaderFun/static/js/main.c88e1c87.js",
-    "static/js/787.25743bb5.chunk.js": "/ShaderFun/static/js/787.25743bb5.chunk.js",
-    "index.html": "/ShaderFun/index.html",
-    "main.6de387c3.css.map": "/ShaderFun/static/css/main.6de387c3.css.map",
-    "main.c88e1c87.js.map": "/ShaderFun/static/js/main.c88e1c87.js.map",
-    "787.25743bb5.chunk.js.map": "/ShaderFun/static/js/787.25743bb5.chunk.js.map"
+    "main.css": "/Ripple/static/css/main.6de387c3.css",
+    "main.js": "/Ripple/static/js/main.f1fedfe3.js",
+    "static/js/787.25743bb5.chunk.js": "/Ripple/static/js/787.25743bb5.chunk.js",
+    "index.html": "/Ripple/index.html",
+    "main.6de387c3.css.map": "/Ripple/static/css/main.6de387c3.css.map",
+    "main.f1fedfe3.js.map": "/Ripple/static/js/main.f1fedfe3.js.map",
+    "787.25743bb5.chunk.js.map": "/Ripple/static/js/787.25743bb5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.6de387c3.css",
-    "static/js/main.c88e1c87.js"
+    "static/js/main.f1fedfe3.js"
   ]
 }
