@@ -11,7 +11,7 @@ import ControlPanel from './ControlPanel';
 const ThreeScene = () => {
     const mountRef = useRef(null);
      const isMobile = useMediaQuery('(max-width:600px)');
-    const bendableSquareRef = useRef(); // Ref for the bendable square mesh
+    const shapeRef = useRef(); // Ref for the bendable square mesh
 
     //STATES
     const [xMultiplier, setXMultiplier] = useState(10.0);
@@ -37,7 +37,7 @@ const ThreeScene = () => {
     // const color1 = new THREE.Color(color1Red, color1Green, color1Blue);
     // const color2 = new THREE.Color(color2Red, color2Green, color2Blue);
 
-    const [gradientBled, setGradientBled] = useState(2.0);
+    const [gradientBlend, setGradientBlend] = useState(2.0);
 
     const [expanded, setExpanded] = useState(true); 
 
@@ -69,15 +69,59 @@ const ThreeScene = () => {
         setWireFrame(!wireFrame);
     };
 
+    const [shape, setShape] = useState('square');
 
-    function createBendableSquare() {
+    const handleShapeChange = (event) => {
+        setShape(event.target.value);
+    };
+
+
+
+    const [rotationSpeedX, setRotationSpeedX] = useState(0.001); // State for rotation speed around X-axis
+    const [rotationSpeedY, setRotationSpeedY] = useState(0.001); // State for rotation speed around Y-axis
+    const [rotationSpeedZ, setRotationSpeedZ] = useState(0.001); // State for rotation speed around Z-axis
+
+    function createSphere() {
+        // Sphere geometry with adjustable size
+        const geometry = new THREE.SphereGeometry(1, 20, 20); 
+
+        // Shader material similar to the square
+        const material = new THREE.ShaderMaterial({
+            wireframe: true,
+            // vertexShader: sphereVertexShader, // You need to create this shader
+            // fragmentShader: sphereFragmentShader, // You need to create this shader
+            vertexShader,
+            fragmentShader,
+            uniforms: {
+                uTime: { value: 0.1 },
+                uSpeedMultiplier: { value: rippleSpeed },
+                uNoiseStrength: { value: noiseStrength },
+                uXMultiplier: { value: xMultiplier },
+                uYMultiplier: { value: yMultiplier },
+                uColor1Red:     {value: color1Red },
+                uColor1Green:   {value: color1Green },
+                uColor1Blue:    {value: color1Blue },
+                uColor2Red:     {value: color2Red },
+                uColor2Green:   {value: color2Green },
+                uColor2Blue:    {value: color2Blue },
+                uGradientBlend: {value: gradientBlend },
+            },
+        });
+
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.set(0, 0, 0);
+        return sphere;
+    }
+
+
+    function createSquare() {
         const geometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
         const material = new THREE.ShaderMaterial({
             wireframe: wireFrame,
             vertexShader,
             fragmentShader,
             uniforms: {
-                uTime: { value: 0.0 },
+                uTime: { value: 0.1 },
                 uXMultiplier: { value: xMultiplier },
                 uYMultiplier: { value: yMultiplier },
                 uSpeedMultiplier: { value: rippleSpeed },
@@ -93,7 +137,7 @@ const ThreeScene = () => {
                 uColor2Green:   {value: color2Green },
                 uColor2Blue:    {value: color2Blue },
 
-                uGradientBlend: {value: gradientBled },
+                uGradientBlend: {value: gradientBlend },
             },
         });
 
@@ -113,14 +157,27 @@ const ThreeScene = () => {
         renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
         mountRef.current.appendChild(renderer.domElement);
 
-        bendableSquareRef.current = createBendableSquare();
-        scene.add(bendableSquareRef.current);
+        // Remove any existing shape from the scene
+        if (shapeRef.current) {
+            scene.remove(shapeRef.current);
+            shapeRef.current.geometry.dispose();
+            shapeRef.current.material.dispose();
+        }
+
+        // Conditionally create and add the shape to the scene
+        if (shape === 'square') {
+            shapeRef.current = createSquare();
+        } else if (shape === 'sphere') {
+            shapeRef.current = createSphere();
+        }
+        scene.add(shapeRef.current);
+
 
         const animate = () => {
             requestAnimationFrame(animate);
-             if (bendableSquareRef.current) {
-                bendableSquareRef.current.material.uniforms.uTime.value += 0.01;
-            }
+            shapeRef.current.rotation.x += rotationSpeedX;
+            shapeRef.current.rotation.y += rotationSpeedY;
+            shapeRef.current.rotation.z += rotationSpeedZ;
             renderer.render(scene, camera);
         };
         animate();
@@ -142,12 +199,12 @@ const ThreeScene = () => {
             mountRef.current.removeChild(renderer.domElement);
         }
         };
-    }, []);
+    }, [shape]);
 
     useEffect(() => {
         // Update the shader uniforms when slider values change
-        if (bendableSquareRef.current) {
-            const mesh = bendableSquareRef.current;
+        if (shapeRef.current ) {
+            const mesh = shapeRef.current;
             mesh.material.uniforms.uXMultiplier.value = xMultiplier;
             mesh.material.uniforms.uYMultiplier.value = yMultiplier;
             mesh.material.uniforms.uSpeedMultiplier.value = rippleSpeed;
@@ -167,18 +224,23 @@ const ThreeScene = () => {
             mesh.material.uniforms.uColor2Green.value = color2Green;
             mesh.material.uniforms.uColor2Blue.value =  color2Blue;
 
-            mesh.material.uniforms.uGradientBlend.value = gradientBled;
+            mesh.material.uniforms.uGradientBlend.value = gradientBlend;
+            
+            if (shape === 'square') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
+                mesh.geometry = newGeometry;
+            } else if (shape === 'sphere') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.SphereGeometry(1, 20, 20); 
+                mesh.geometry = newGeometry;
+            };
 
-            mesh.geometry.dispose();
-
-            // Create new geometry with updated xDensity and yDensity
-            const newGeometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
-            mesh.geometry = newGeometry;
 
             mesh.material.wireframe = wireFrame;
             mesh.material.needsUpdate = true;
         }
-    }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame, xDensity, yDensity, rotationX, rotationY, rotationZ, gradientBled ]);
+    }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame, xDensity, yDensity, rotationX, rotationY, rotationZ, gradientBlend, shape ]);
 
     return (
         <div>
@@ -204,13 +266,16 @@ const ThreeScene = () => {
                     rotationX={rotationX} setRotationX={setRotationX}
                     rotationY={rotationY} setRotationY={setRotationY}
                     rotationZ={rotationZ} setRotationZ={setRotationZ}
-                    gradientBled={gradientBled} setGradientBled={setGradientBled}
+                    gradientBlend={gradientBlend} setGradientBlend={setGradientBlend}
+                    shape={shape} setShape={setShape}
                 />
             </div> 
+            <div>
+                <button onClick={handleShapeChange} value="square">Square</button>
+                <button onClick={handleShapeChange} value="sphere">Sphere</button>
+            </div>
         </div>
     );
 };
 
 export default ThreeScene;
-
-

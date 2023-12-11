@@ -1,9 +1,14 @@
 import React from 'react';
-import { Box, Slider, Stack, Typography, Grid, useMediaQuery } from '@mui/material';
+import { Box, Slider, Stack, Typography, Grid, useMediaQuery, Switch, FormControlLabel, Tabs, Tab, Divider, Button, IconButton  } from '@mui/material';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-import { Tabs, Tab, Divider } from '@mui/material';
+import { GiMeshBall } from "react-icons/gi";
+import { GiCube } from "react-icons/gi";
+import TextureIcon from '@mui/icons-material/Texture';
+import { PiCubeTransparent } from "react-icons/pi";
+import { PiCubeTransparentFill } from "react-icons/pi";
 import Sliders from './Sliders';
-import './ControlPanel.css';
+import "./ControlPanel.css";
+
 
 const ControlPanel = ({
     expanded, setExpanded, currentTab, setCurrentTab, isMobile,
@@ -13,15 +18,20 @@ const ControlPanel = ({
     color1Red, setColor1Red, color1Green, setColor1Green, color1Blue, setColor1Blue,
     color2Red, setColor2Red, color2Green, setColor2Green, color2Blue, setColor2Blue,
     rotationX, setRotationX, rotationY, setRotationY, rotationZ, setRotationZ,
-    gradientBled, setGradientBled
+    gradientBlend, setGradientBlend, shape, setShape,
 }) => {
 
+    const buttonColor = 'rgba(85,221,224,1.0)';
     const handleToggleExpand = () => {
         setExpanded(!expanded);
     }
 
     const handleTabChange = (event, newValue) => {
         setCurrentTab(newValue);
+    }
+
+    const handleShapeChange = (event, newValue) => {
+        setShape(newValue);
     }
 
     return (
@@ -45,7 +55,7 @@ const ControlPanel = ({
 
                 <Box display={'flex'} marginTop={'4%'} flexDirection={'column'}>
                     <TuneOutlinedIcon 
-                        sx={{ marginLeft: '5%',   fontSize: '40px', color: 'white' }}
+                        sx={{ marginLeft: '5%',   fontSize: '40px', color: 'rgba(249,249,249, 1)' }}
                         onClick={handleToggleExpand}
                     />
 
@@ -85,16 +95,45 @@ const ControlPanel = ({
                     </Tabs>
                 </Box>
 
-                { currentTab === 'shape' &&
-                (<Sliders spacing={1}
-                   sliders={[
-                    { label: 'X', value: xMultiplier, setter: setXMultiplier, min: 0.0, max: 20.0, step: 0.1 },
-                     { label: 'Res X', value: xDensity, setter: setXDensity, min: 1.0, max: 80.0, step: 1.0},
-                    { label: 'Y', value: yMultiplier, setter: setYMultiplier, min: 0.0, max: 20.0, step: 0.1 },
-                     { label: 'Res Y', value: yDensity, setter: setYDensity, min: 1.0, max: 80.0, step: 1.0},
-                    { label: 'Strength', value: noiseStrength, setter: setNoiseStrength, min: 0.1, max: 4.0, step: 0.1 },
-                    ]}
-                />)}
+                { currentTab === 'shape' &&(
+                    <Box>
+                        <Sliders spacing={1}
+                        sliders={[
+                            { label: 'X', value: xMultiplier, setter: setXMultiplier, min: 0.0, max: 20.0, step: 0.1 },
+                            { label: 'Res X', value: xDensity, setter: setXDensity, min: 1.0, max: 80.0, step: 1.0},
+                            { label: 'Y', value: yMultiplier, setter: setYMultiplier, min: 0.0, max: 20.0, step: 0.1 },
+                            { label: 'Res Y', value: yDensity, setter: setYDensity, min: 1.0, max: 80.0, step: 1.0},
+                            { label: 'Strength', value: noiseStrength, setter: setNoiseStrength, min: 0.1, max: 4.0, step: 0.1 },
+                            ]}
+                        />
+                        <Divider sx={{ 
+                            width: '90%', 
+                            marginLeft: 'auto', 
+                            marginRight: 'auto',
+                            marginTop: '-5%',
+                            backgroundColor: 'rgba(100, 100, 255, 0.5)', // Adjust the RGBA values as needed
+                            height: '0.5px' 
+                        }} />
+                        <Box display={'flex'} justifyContent={'space-around'}>
+                            <IconButton aria-label="square" onClick={(e) => handleShapeChange(e, 'square')}  color="primary" >
+                                <TextureIcon  className="shapeButton"/>
+                            </IconButton>
+                            <IconButton area-label="sphere" onClick={(e) => handleShapeChange(e, 'sphere')}  color="primary" >
+                                <GiMeshBall className="shapeButton"/>
+                            </IconButton>
+                            <IconButton area-label="cube" color="primary" >
+                                {/* <GiCube className="cubeButton" /> */}
+                                <PiCubeTransparent className="cubeButton" />
+                            </IconButton>
+                            <div class="image-container">
+                                <img src="static-image.jpg" alt="Static" class="static-image" />
+                                <img src="animated.gif" alt="Animated" class="animated-gif" />
+                            </div>
+
+                        </Box>
+
+                    </Box>
+                )}
 
                 { currentTab === 'motion' &&
                 (<Sliders spacing={1}
@@ -110,14 +149,29 @@ const ControlPanel = ({
 
                 { currentTab === 'surface' &&
                     <Box display={'flex'} flexDirection={'column'}>
+                        <Box marginLeft='6%'>
+                            <FormControlLabel
+                                control={
+                                    <Switch onChange={(e) => setWireFrame(e.target.checked)} checked={wireFrame}
+                                        sx={{
+                                            '& .MuiSwitch-track': {
+                                                backgroundColor: 'white', 
+                                                opacity: 0.4,
+                                            },
+                                        }}
+                                    />
+                                }
+                                    label="Wireframe"
+                            />
+                        </Box>
                          <Box width={'90%'}>
                             <Sliders
                             sliders={[
-                                { label: 'Blend', value: gradientBled, setter: setGradientBled, min: 1.0, max: 7.0, step: 0.01}
+                                { label: 'Blend', value: gradientBlend, setter: setGradientBlend, min: 1.0, max: 7.0, step: 0.01}
                             ]}
                         />
                         </Box>
-                        <Box display={'flex'} width={'90%'}>
+                        <Box display={'flex'} width={'90%'} marginLeft='3%'>
                             <Sliders small={true} spacing={0}
                                 sliders={[
                                     { label: 'r', value: color1Red, setter: setColor1Red, min: 0.0, max: 1.0, step: 0.00392 },
