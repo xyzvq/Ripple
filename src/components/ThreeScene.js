@@ -269,10 +269,6 @@ const ThreeScene = () => {
                     gradientBlend={gradientBlend} setGradientBlend={setGradientBlend}
                     shape={shape} setShape={setShape}
                 />
-            </div> 
-            <div>
-                <button onClick={handleShapeChange} value="square">Square</button>
-                <button onClick={handleShapeChange} value="sphere">Sphere</button>
             </div>
         </div>
     );

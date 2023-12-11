@@ -6,6 +6,10 @@ import { GiCube } from "react-icons/gi";
 import TextureIcon from '@mui/icons-material/Texture';
 import { PiCubeTransparent } from "react-icons/pi";
 import { PiCubeTransparentFill } from "react-icons/pi";
+import { GiHolosphere } from "react-icons/gi";
+import { GiDividedSquare } from "react-icons/gi";
+
+
 import Sliders from './Sliders';
 import "./ControlPanel.css";
 
@@ -33,6 +37,8 @@ const ControlPanel = ({
     const handleShapeChange = (event, newValue) => {
         setShape(newValue);
     }
+
+
 
     return (
         <Box>
@@ -114,21 +120,18 @@ const ControlPanel = ({
                             backgroundColor: 'rgba(100, 100, 255, 0.5)', // Adjust the RGBA values as needed
                             height: '0.5px' 
                         }} />
-                        <Box display={'flex'} justifyContent={'space-around'}>
+                        
+                        <Box display={'flex'} justifyContent={'space-evenly'} marginTop={'5%'}>
+                            
                             <IconButton aria-label="square" onClick={(e) => handleShapeChange(e, 'square')}  color="primary" >
-                                <TextureIcon  className="shapeButton"/>
+                                <GiDividedSquare  className="shapeButton"/>
                             </IconButton>
                             <IconButton area-label="sphere" onClick={(e) => handleShapeChange(e, 'sphere')}  color="primary" >
-                                <GiMeshBall className="shapeButton"/>
+                                <GiHolosphere className="shapeButton"/>
                             </IconButton>
                             <IconButton area-label="cube" color="primary" >
-                                {/* <GiCube className="cubeButton" /> */}
-                                <PiCubeTransparent className="cubeButton" />
+                                <PiCubeTransparent className="shapeButton"/>
                             </IconButton>
-                            <div class="image-container">
-                                <img src="static-image.jpg" alt="Static" class="static-image" />
-                                <img src="animated.gif" alt="Animated" class="animated-gif" />
-                            </div>
 
                         </Box>
 

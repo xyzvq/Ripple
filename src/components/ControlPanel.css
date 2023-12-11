@@ -1,26 +1,10 @@
 .shapeButton {
     font-size: 2rem;
-    transition: transform 0.5s ease-in-out;
+    /* transition: transform 1.5s ease-in-out; */
+    cursor: pointer;
+
 }
 
 .shapeButton:hover {
-    /* color: rgba(85, 221, 224, 1.0); */
-    transform: rotate(120deg);
-}
-
-.cubeButton {
-    font-size: 2rem;
-    transition: transform 0.5s ease-in-out;
-}
-
-.cubeButton:hover {
-    /* color: rgba(85, 221, 224, 1.0); */
-    /* transform: rotate(120deg); */
-     transform: scaleX(-1);
-}
-
-.cube-reverse {
-    font-size: 2rem;
-    transition: transform 0.5s ease-in-out;
-    transform: scaleX(-1);
+    color: rgba(221, 0, 100, 1.0);
 }
