@@ -19,9 +19,10 @@ const ThreeScene = () => {
     const [rippleSpeed, setRippleSpeed] = useState(0.75);
     const [noiseStrength, setNoiseStrength] = useState(2.0);
     const [wireFrame, setWireFrame] = useState(false); 
-    const [rotationX, setRotationX] = useState(0.0); // State for rotation x
-    const [rotationY, setRotationY] = useState(0.0); // State for rotation y
-    const [rotationZ, setRotationZ] = useState(0.0); // State for rotation z
+
+    const [rotationX, setRotationX] = useState(0); // State for rotation x
+    const [rotationY, setRotationY] = useState(0); // State for rotation y
+    const [rotationZ, setRotationZ] = useState(0); // State for rotation z
 
     const [xDensity, setXDensity] = useState(10); 
     const [yDensity, setYDensity] = useState(10);
@@ -33,53 +34,16 @@ const ThreeScene = () => {
     const [color2Red, setColor2Red] = useState(1.0); // State for color 2 red
     const [color2Green, setColor2Green] = useState(0.1); // State for color 2 green
     const [color2Blue, setColor2Blue] = useState(0.3); // State for color 2 blue
-
-    // const color1 = new THREE.Color(color1Red, color1Green, color1Blue);
-    // const color2 = new THREE.Color(color2Red, color2Green, color2Blue);
-
     const [gradientBlend, setGradientBlend] = useState(2.0);
-
     const [expanded, setExpanded] = useState(true); 
-
     const [currentTab, setCurrentTab] = useState('shape');
-
-    const handleTabChange = (event, newValue) => {
-        setCurrentTab(newValue);
-    };
-
-    const handleToggleExpand = () => {
-        setExpanded(!expanded);
-    };
-
-     // Handler for color1 changes
-    const handleColor1Change = (color) => {
-        setColor1Red(color.rgb.r / 255);
-        setColor1Green(color.rgb.g / 255);
-        setColor1Blue(color.rgb.b / 255);
-    };
-
-    // Handler for color2 changes
-    const handleColor2Change = (color) => {
-        setColor2Red(color.rgb.r / 255);
-        setColor2Green(color.rgb.g / 255);
-        setColor2Blue(color.rgb.b / 255);
-    };
-
-    const handleMeshChange = () => {
-        setWireFrame(!wireFrame);
-    };
-
     const [shape, setShape] = useState('square');
 
-    const handleShapeChange = (event) => {
-        setShape(event.target.value);
-    };
+    const [rotationXOn, setRotationXOn] = useState(false); // State for rotation speed around X-axis
+    const [rotationYOn, setRotationYOn] = useState(false); // State for rotation speed around Y-axis
+    const [rotationZOn, setRotationZOn] = useState(false); // State for rotation speed around Z-axis
 
 
-
-    const [rotationSpeedX, setRotationSpeedX] = useState(0.001); // State for rotation speed around X-axis
-    const [rotationSpeedY, setRotationSpeedY] = useState(0.001); // State for rotation speed around Y-axis
-    const [rotationSpeedZ, setRotationSpeedZ] = useState(0.001); // State for rotation speed around Z-axis
 
     function createSphere() {
         // Sphere geometry with adjustable size
@@ -170,14 +134,13 @@ const ThreeScene = () => {
         } else if (shape === 'sphere') {
             shapeRef.current = createSphere();
         }
+
         scene.add(shapeRef.current);
 
 
         const animate = () => {
             requestAnimationFrame(animate);
-            shapeRef.current.rotation.x += rotationSpeedX;
-            shapeRef.current.rotation.y += rotationSpeedY;
-            shapeRef.current.rotation.z += rotationSpeedZ;
+            shapeRef.current.material.uniforms.uTime.value += 0.01;
             renderer.render(scene, camera);
         };
         animate();
@@ -196,10 +159,28 @@ const ThreeScene = () => {
             window.removeEventListener('resize', handleResize);
             if (mountRef.current && renderer.domElement) {
             // Only remove the child if mountRef.current is not null
-            mountRef.current.removeChild(renderer.domElement);
-        }
+                mountRef.current.removeChild(renderer.domElement);
+            }
         };
-    }, [shape]);
+    }, [shape, rotationXOn, rotationYOn, rotationZOn, rotationX, rotationY, rotationZ, ]);
+
+     useEffect(() => {
+        // Rotation effect
+        const interval = setInterval(() => {
+            if (!shapeRef.current) return;
+
+                shapeRef.current.rotation.x += rotationX;
+
+
+                shapeRef.current.rotation.y += rotationY;
+
+
+                shapeRef.current.rotation.z += rotationZ;
+
+        }, 20); // Adjust the interval as needed
+
+        return () => clearInterval(interval);
+    }, [rotationX, rotationY, rotationZ, rotationXOn, rotationYOn, rotationZOn]); // Depend on rotation values and switch states
 
     useEffect(() => {
         // Update the shader uniforms when slider values change
@@ -210,9 +191,6 @@ const ThreeScene = () => {
             mesh.material.uniforms.uSpeedMultiplier.value = rippleSpeed;
             mesh.material.uniforms.uNoiseStrength.value = noiseStrength;
 
-            mesh.rotation.x = rotationX;
-            mesh.rotation.y = rotationY;
-            mesh.rotation.z = rotationZ;
 
             // Color 1
             mesh.material.uniforms.uColor1Red.value =   color1Red;
@@ -236,11 +214,10 @@ const ThreeScene = () => {
                 mesh.geometry = newGeometry;
             };
 
-
             mesh.material.wireframe = wireFrame;
             mesh.material.needsUpdate = true;
         }
-    }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame, xDensity, yDensity, rotationX, rotationY, rotationZ, gradientBlend, shape ]);
+    }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame, xDensity, yDensity, rotationX, rotationY, rotationZ, gradientBlend, shape,  ]);
 
     return (
         <div>
@@ -267,7 +244,10 @@ const ThreeScene = () => {
                     rotationY={rotationY} setRotationY={setRotationY}
                     rotationZ={rotationZ} setRotationZ={setRotationZ}
                     gradientBlend={gradientBlend} setGradientBlend={setGradientBlend}
-                    shape={shape} setShape={setShape}
+                    shape={shape} setShape={setShape} 
+                    rotationXOn={rotationXOn} setRotationXOn={setRotationXOn}
+                    rotationYOn={rotationYOn} setRotationYOn={setRotationYOn}
+                    rotationZOn={rotationZOn} setRotationZOn={setRotationZOn}
                 />
             </div>
         </div>

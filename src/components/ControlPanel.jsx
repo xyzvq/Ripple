@@ -8,8 +8,6 @@ import { PiCubeTransparent } from "react-icons/pi";
 import { PiCubeTransparentFill } from "react-icons/pi";
 import { GiHolosphere } from "react-icons/gi";
 import { GiDividedSquare } from "react-icons/gi";
-
-
 import Sliders from './Sliders';
 import "./ControlPanel.css";
 
@@ -22,10 +20,15 @@ const ControlPanel = ({
     color1Red, setColor1Red, color1Green, setColor1Green, color1Blue, setColor1Blue,
     color2Red, setColor2Red, color2Green, setColor2Green, color2Blue, setColor2Blue,
     rotationX, setRotationX, rotationY, setRotationY, rotationZ, setRotationZ,
-    gradientBlend, setGradientBlend, shape, setShape,
+    gradientBlend, setGradientBlend, shape, setShape, 
+    rotationXOn, setRotationXOn,
+    rotationYOn, setRotationYOn,
+    rotationZOn, setRotationZOn,
 }) => {
 
-    const buttonColor = 'rgba(85,221,224,1.0)';
+
+    const selectedButtonColor = 'rgba(221, 0, 100, 1.0)';
+    const buttonColor = 'rgba(56, 116, 203, 1)';
     const handleToggleExpand = () => {
         setExpanded(!expanded);
     }
@@ -37,6 +40,7 @@ const ControlPanel = ({
     const handleShapeChange = (event, newValue) => {
         setShape(newValue);
     }
+
 
 
 
@@ -103,6 +107,7 @@ const ControlPanel = ({
 
                 { currentTab === 'shape' &&(
                     <Box>
+
                         <Sliders spacing={1}
                         sliders={[
                             { label: 'X', value: xMultiplier, setter: setXMultiplier, min: 0.0, max: 20.0, step: 0.1 },
@@ -123,13 +128,13 @@ const ControlPanel = ({
                         
                         <Box display={'flex'} justifyContent={'space-evenly'} marginTop={'5%'}>
                             
-                            <IconButton aria-label="square" onClick={(e) => handleShapeChange(e, 'square')}  color="primary" >
+                            <IconButton aria-label="square" onClick={(e) => handleShapeChange(e, 'square')}   style={{ color: shape === 'square' ? selectedButtonColor : buttonColor }} >
                                 <GiDividedSquare  className="shapeButton"/>
                             </IconButton>
-                            <IconButton area-label="sphere" onClick={(e) => handleShapeChange(e, 'sphere')}  color="primary" >
+                            <IconButton area-label="sphere" onClick={(e) => handleShapeChange(e, 'sphere')}   style={{ color: shape === 'sphere' ? selectedButtonColor : buttonColor }} >
                                 <GiHolosphere className="shapeButton"/>
                             </IconButton>
-                            <IconButton area-label="cube" color="primary" >
+                            <IconButton area-label="cube"  style={{ color: shape === 'cube' ? selectedButtonColor : buttonColor }}>
                                 <PiCubeTransparent className="shapeButton"/>
                             </IconButton>
 
@@ -139,15 +144,17 @@ const ControlPanel = ({
                 )}
 
                 { currentTab === 'motion' &&
-                (<Sliders spacing={1}
+                <Box>
+                <Sliders spacing={1}
                    sliders={[
-                        { label: 'X°', value: rotationX, setter: setRotationX, min: -Math.PI, max: Math.PI, step: 0.01 },
-                        { label: 'Y°', value: rotationY, setter: setRotationY, min: -Math.PI, max: Math.PI, step: 0.01 },
-                        { label: 'Z°', value: rotationZ, setter: setRotationZ, min: -Math.PI, max: Math.PI, step: 0.01 },
-                         { label: 'Speed', value: rippleSpeed, setter: setRippleSpeed, min: 0.1, max: 1.5, step: 0.05 },
-                    
+                        { label: 'X°', value: rotationX, setter: setRotationX, min: 0, max:0.1, step: 0.01 },
+                        { label: 'Y°', value: rotationY, setter: setRotationY, min: 0, max:0.1, step: 0.01 },
+                        { label: 'Z°', value: rotationZ, setter: setRotationZ, min: 0, max: 0.1, step: 0.01 },
+                        { label: 'Speed', value: rippleSpeed, setter: setRippleSpeed, min: 0.05, max: 1.5, step: 0.01 },
                     ]}
-                />)}
+                />
+                    </Box>
+                    }
 
 
                 { currentTab === 'surface' &&
@@ -170,7 +177,7 @@ const ControlPanel = ({
                          <Box width={'90%'}>
                             <Sliders
                             sliders={[
-                                { label: 'Blend', value: gradientBlend, setter: setGradientBlend, min: 1.0, max: 7.0, step: 0.01}
+                                { label: 'Blend', value: gradientBlend, setter: setGradientBlend, min: 0.1, max: 6.0, step: 0.01}
                             ]}
                         />
                         </Box>
