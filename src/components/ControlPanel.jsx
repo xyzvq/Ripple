@@ -6,6 +6,8 @@ import { GiCube } from "react-icons/gi";
 import TextureIcon from '@mui/icons-material/Texture';
 import { PiCubeTransparent } from "react-icons/pi";
 import { PiCubeTransparentFill } from "react-icons/pi";
+import { CiFaceSmile } from "react-icons/ci";
+
 import { GiHolosphere } from "react-icons/gi";
 import { GiDividedSquare } from "react-icons/gi";
 import Sliders from './Sliders';
@@ -134,8 +136,11 @@ const ControlPanel = ({
                             <IconButton area-label="sphere" onClick={(e) => handleShapeChange(e, 'sphere')}   style={{ color: shape === 'sphere' ? selectedButtonColor : buttonColor }} >
                                 <GiHolosphere className="shapeButton"/>
                             </IconButton>
-                            <IconButton area-label="cube"  style={{ color: shape === 'cube' ? selectedButtonColor : buttonColor }}>
+                            <IconButton area-label="cube" onClick={(e) => handleShapeChange(e, 'cube')}   style={{ color: shape === 'cube' ? selectedButtonColor : buttonColor }}>
                                 <PiCubeTransparent className="shapeButton"/>
+                            </IconButton>
+                            <IconButton area-label="cube" onClick={(e) => handleShapeChange(e, 'smile')}   style={{ color: shape === 'smile' ? selectedButtonColor : buttonColor }}>
+                                <CiFaceSmile />
                             </IconButton>
 
                         </Box>

@@ -44,18 +44,17 @@ const ThreeScene = () => {
     const [rotationZOn, setRotationZOn] = useState(false); // State for rotation speed around Z-axis
 
 
-
     function createSphere() {
         // Sphere geometry with adjustable size
         const geometry = new THREE.SphereGeometry(1, 20, 20); 
-
         // Shader material similar to the square
         const material = new THREE.ShaderMaterial({
-            wireframe: true,
+            wireframe: wireFrame,
             // vertexShader: sphereVertexShader, // You need to create this shader
             // fragmentShader: sphereFragmentShader, // You need to create this shader
             vertexShader,
             fragmentShader,
+            flatShading: false,
             uniforms: {
                 uTime: { value: 0.1 },
                 uSpeedMultiplier: { value: rippleSpeed },
@@ -77,11 +76,95 @@ const ThreeScene = () => {
         return sphere;
     }
 
+    const scaleFactor = 0.05; // Change this to scale the smiley
+
+    const smileyShape = new THREE.Shape()
+        .moveTo(80 * scaleFactor, 40 * scaleFactor)
+        .absarc(40 * scaleFactor, 40 * scaleFactor, 40 * scaleFactor, 0, Math.PI * 2, false);
+
+    const smileyEye1Path = new THREE.Path()
+        .moveTo(35 * scaleFactor, 20 * scaleFactor)
+        .absellipse(25 * scaleFactor, 20 * scaleFactor, 10 * scaleFactor, 10 * scaleFactor, 0, Math.PI * 2, true);
+
+    const smileyEye2Path = new THREE.Path()
+        .moveTo(65 * scaleFactor, 20 * scaleFactor)
+        .absarc(55 * scaleFactor, 20 * scaleFactor, 10 * scaleFactor, 0, Math.PI * 2, true);
+
+    const smileyMouthPath = new THREE.Path()
+        .moveTo(20 * scaleFactor, 40 * scaleFactor)
+        .quadraticCurveTo(40 * scaleFactor, 60 * scaleFactor, 60 * scaleFactor, 40 * scaleFactor)
+        .bezierCurveTo(70 * scaleFactor, 45 * scaleFactor, 70 * scaleFactor, 50 * scaleFactor, 60 * scaleFactor, 60 * scaleFactor)
+        .quadraticCurveTo(40 * scaleFactor, 80 * scaleFactor, 20 * scaleFactor, 60 * scaleFactor)
+        .quadraticCurveTo(5 * scaleFactor, 50 * scaleFactor, 20 * scaleFactor, 40 * scaleFactor);
+
+    smileyShape.holes.push(smileyEye1Path);
+    smileyShape.holes.push(smileyEye2Path);
+    smileyShape.holes.push(smileyMouthPath);
+
+
+    function createCube() {
+        const geometry = new THREE.BoxGeometry(1, 1, 1);
+        const material = new THREE.ShaderMaterial({
+            wireframe: wireFrame,
+            flatShading: true,
+            vertexShader,
+            fragmentShader,
+            uniforms: {
+                uTime: { value: 0.1 },
+                uSpeedMultiplier: { value: rippleSpeed },
+                uNoiseStrength: { value: noiseStrength },
+                uXMultiplier: { value: xMultiplier },
+                uYMultiplier: { value: yMultiplier },
+                uColor1Red:     {value: color1Red },
+                uColor1Green:   {value: color1Green },
+                uColor1Blue:    {value: color1Blue },
+                uColor2Red:     {value: color2Red },
+                uColor2Green:   {value: color2Green },
+                uColor2Blue:    {value: color2Blue },
+                uGradientBlend: {value: gradientBlend },
+            },
+        });
+
+        const cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0, 0, 0);
+        return cube;
+    }
+
+    function createSmile() {
+        const geometry = new THREE.ShapeGeometry( smileyShape );
+         const material = new THREE.ShaderMaterial({
+            wireframe: wireFrame,
+            flatShading: true,
+            vertexShader,
+            fragmentShader,
+            uniforms: {
+                uTime: { value: 0.1 },
+                uSpeedMultiplier: { value: rippleSpeed },
+                uNoiseStrength: { value: noiseStrength },
+                uXMultiplier: { value: xMultiplier },
+                uYMultiplier: { value: yMultiplier },
+                uColor1Red:     {value: color1Red },
+                uColor1Green:   {value: color1Green },
+                uColor1Blue:    {value: color1Blue },
+                uColor2Red:     {value: color2Red },
+                uColor2Green:   {value: color2Green },
+                uColor2Blue:    {value: color2Blue },
+                uGradientBlend: {value: gradientBlend },
+            },
+        });
+
+        const smile = new THREE.Mesh(geometry, material);
+        smile.rotation.z = Math.PI;
+        smile.position.set(2, 2, -2);
+        return smile;
+    }
+
 
     function createSquare() {
         const geometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
         const material = new THREE.ShaderMaterial({
             wireframe: wireFrame,
+            flatShading: true,
             vertexShader,
             fragmentShader,
             uniforms: {
@@ -115,7 +198,7 @@ const ThreeScene = () => {
 
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
-        camera.position.z = 5;
+        camera.position.z = 6;
 
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
@@ -133,6 +216,11 @@ const ThreeScene = () => {
             shapeRef.current = createSquare();
         } else if (shape === 'sphere') {
             shapeRef.current = createSphere();
+        } else if (shape === 'cube') {
+            shapeRef.current = createCube();
+        }
+        else if (shape === 'smile') {
+            shapeRef.current = createSmile();
         }
 
         scene.add(shapeRef.current);
