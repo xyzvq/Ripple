@@ -139,8 +139,8 @@ const ControlPanel = ({
                             <IconButton area-label="cube" onClick={(e) => handleShapeChange(e, 'cube')}   style={{ color: shape === 'cube' ? selectedButtonColor : buttonColor }}>
                                 <PiCubeTransparent className="shapeButton"/>
                             </IconButton>
-                            <IconButton area-label="cube" onClick={(e) => handleShapeChange(e, 'smile')}   style={{ color: shape === 'smile' ? selectedButtonColor : buttonColor }}>
-                                <CiFaceSmile />
+                            <IconButton area-label="smile" onClick={(e) => handleShapeChange(e, 'smile')}   style={{ color: shape === 'smile' ? selectedButtonColor : buttonColor }}>
+                                <CiFaceSmile className="shapeButton"/>
                             </IconButton>
 
                         </Box>

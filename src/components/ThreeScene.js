@@ -54,7 +54,6 @@ const ThreeScene = () => {
             // fragmentShader: sphereFragmentShader, // You need to create this shader
             vertexShader,
             fragmentShader,
-            flatShading: false,
             uniforms: {
                 uTime: { value: 0.1 },
                 uSpeedMultiplier: { value: rippleSpeed },
@@ -106,7 +105,6 @@ const ThreeScene = () => {
         const geometry = new THREE.BoxGeometry(1, 1, 1);
         const material = new THREE.ShaderMaterial({
             wireframe: wireFrame,
-            flatShading: true,
             vertexShader,
             fragmentShader,
             uniforms: {
@@ -134,7 +132,6 @@ const ThreeScene = () => {
         const geometry = new THREE.ShapeGeometry( smileyShape );
          const material = new THREE.ShaderMaterial({
             wireframe: wireFrame,
-            flatShading: true,
             vertexShader,
             fragmentShader,
             uniforms: {
@@ -164,7 +161,6 @@ const ThreeScene = () => {
         const geometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
         const material = new THREE.ShaderMaterial({
             wireframe: wireFrame,
-            flatShading: true,
             vertexShader,
             fragmentShader,
             uniforms: {
@@ -300,7 +296,17 @@ const ThreeScene = () => {
                 mesh.geometry.dispose();
                 const newGeometry = new THREE.SphereGeometry(1, 20, 20); 
                 mesh.geometry = newGeometry;
-            };
+            }
+            else if (shape === 'cube') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.BoxGeometry(1, 1, 1);
+                mesh.geometry = newGeometry;
+            }
+            else if (shape === 'smile') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.ShapeGeometry( smileyShape );
+                mesh.geometry = newGeometry;
+            }
 
             mesh.material.wireframe = wireFrame;
             mesh.material.needsUpdate = true;
