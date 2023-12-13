@@ -152,9 +152,9 @@ const ControlPanel = ({
                 <Box>
                 <Sliders spacing={1}
                    sliders={[
-                        { label: 'X°', value: rotationX, setter: setRotationX, min: 0, max:0.1, step: 0.01 },
-                        { label: 'Y°', value: rotationY, setter: setRotationY, min: 0, max:0.1, step: 0.01 },
-                        { label: 'Z°', value: rotationZ, setter: setRotationZ, min: 0, max: 0.1, step: 0.01 },
+                        { label: 'X°', value: rotationX, setter: setRotationX, min: 0, max:0.05, step: 0.01 },
+                        { label: 'Y°', value: rotationY, setter: setRotationY, min: 0, max:0.05, step: 0.01 },
+                        { label: 'Z°', value: rotationZ, setter: setRotationZ, min: 0, max: 0.05, step: 0.01 },
                         { label: 'Speed', value: rippleSpeed, setter: setRippleSpeed, min: 0.05, max: 1.5, step: 0.01 },
                     ]}
                 />

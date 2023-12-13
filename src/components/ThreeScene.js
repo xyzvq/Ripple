@@ -10,8 +10,11 @@ import ControlPanel from './ControlPanel';
 
 const ThreeScene = () => {
     const mountRef = useRef(null);
-     const isMobile = useMediaQuery('(max-width:600px)');
+    const isMobile = useMediaQuery('(max-width:600px)');
     const shapeRef = useRef(); // Ref for the bendable square mesh
+    const [shape, setShape] = useState('square');
+    const rendererRef = useRef(null);
+
 
     //STATES
     const [xMultiplier, setXMultiplier] = useState(10.0);
@@ -37,7 +40,6 @@ const ThreeScene = () => {
     const [gradientBlend, setGradientBlend] = useState(2.0);
     const [expanded, setExpanded] = useState(true); 
     const [currentTab, setCurrentTab] = useState('shape');
-    const [shape, setShape] = useState('square');
 
     const [rotationXOn, setRotationXOn] = useState(false); // State for rotation speed around X-axis
     const [rotationYOn, setRotationYOn] = useState(false); // State for rotation speed around Y-axis
@@ -191,22 +193,22 @@ const ThreeScene = () => {
 
     useEffect(() => {
         if (!mountRef.current) return;
-
+        if (rendererRef.current) {
+            rendererRef.current.dispose();
+        }
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
         camera.position.z = 6;
-
         const renderer = new THREE.WebGLRenderer();
         renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
         mountRef.current.appendChild(renderer.domElement);
-
+        rendererRef.current = renderer;
         // Remove any existing shape from the scene
         if (shapeRef.current) {
             scene.remove(shapeRef.current);
             shapeRef.current.geometry.dispose();
             shapeRef.current.material.dispose();
         }
-
         // Conditionally create and add the shape to the scene
         if (shape === 'square') {
             shapeRef.current = createSquare();
@@ -220,7 +222,6 @@ const ThreeScene = () => {
         }
 
         scene.add(shapeRef.current);
-
 
         const animate = () => {
             requestAnimationFrame(animate);
@@ -238,33 +239,28 @@ const ThreeScene = () => {
         };
 
         window.addEventListener('resize', handleResize);
-
         return () => {
             window.removeEventListener('resize', handleResize);
-            if (mountRef.current && renderer.domElement) {
+            if (mountRef.current && rendererRef.current) {
             // Only remove the child if mountRef.current is not null
                 mountRef.current.removeChild(renderer.domElement);
+                rendererRef.current.dispose();
+                rendererRef.current = null;
             }
         };
-    }, [shape, rotationXOn, rotationYOn, rotationZOn, rotationX, rotationY, rotationZ, ]);
+    }, [shape]);
 
      useEffect(() => {
         // Rotation effect
         const interval = setInterval(() => {
             if (!shapeRef.current) return;
-
                 shapeRef.current.rotation.x += rotationX;
-
-
                 shapeRef.current.rotation.y += rotationY;
-
-
                 shapeRef.current.rotation.z += rotationZ;
-
         }, 20); // Adjust the interval as needed
 
         return () => clearInterval(interval);
-    }, [rotationX, rotationY, rotationZ, rotationXOn, rotationYOn, rotationZOn]); // Depend on rotation values and switch states
+    }, [rotationX, rotationY, rotationZ,]); // Depend on rotation values and switch states
 
     useEffect(() => {
         // Update the shader uniforms when slider values change
@@ -274,7 +270,6 @@ const ThreeScene = () => {
             mesh.material.uniforms.uYMultiplier.value = yMultiplier;
             mesh.material.uniforms.uSpeedMultiplier.value = rippleSpeed;
             mesh.material.uniforms.uNoiseStrength.value = noiseStrength;
-
 
             // Color 1
             mesh.material.uniforms.uColor1Red.value =   color1Red;
@@ -288,30 +283,30 @@ const ThreeScene = () => {
 
             mesh.material.uniforms.uGradientBlend.value = gradientBlend;
             
-            if (shape === 'square') {
-                mesh.geometry.dispose();
-                const newGeometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
-                mesh.geometry = newGeometry;
-            } else if (shape === 'sphere') {
-                mesh.geometry.dispose();
-                const newGeometry = new THREE.SphereGeometry(1, 20, 20); 
-                mesh.geometry = newGeometry;
-            }
-            else if (shape === 'cube') {
-                mesh.geometry.dispose();
-                const newGeometry = new THREE.BoxGeometry(1, 1, 1);
-                mesh.geometry = newGeometry;
-            }
-            else if (shape === 'smile') {
-                mesh.geometry.dispose();
-                const newGeometry = new THREE.ShapeGeometry( smileyShape );
-                mesh.geometry = newGeometry;
-            }
+            // if (shape === 'square') {
+            //     mesh.geometry.dispose();
+            //     const newGeometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
+            //     mesh.geometry = newGeometry;
+            // } else if (shape === 'sphere') {
+            //     mesh.geometry.dispose();
+            //     const newGeometry = new THREE.SphereGeometry(1, 20, 20); 
+            //     mesh.geometry = newGeometry;
+            // }
+            // else if (shape === 'cube') {
+            //     mesh.geometry.dispose();
+            //     const newGeometry = new THREE.BoxGeometry(1, 1, 1);
+            //     mesh.geometry = newGeometry;
+            // }
+            // else if (shape === 'smile') {
+            //     mesh.geometry.dispose();
+            //     const newGeometry = new THREE.ShapeGeometry( smileyShape );
+            //     mesh.geometry = newGeometry;
+            // }
 
             mesh.material.wireframe = wireFrame;
             mesh.material.needsUpdate = true;
         }
-    }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame, xDensity, yDensity, rotationX, rotationY, rotationZ, gradientBlend, shape,  ]);
+    }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame, xDensity, yDensity, gradientBlend, ]);
 
     return (
         <div>
