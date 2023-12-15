@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Slider, Stack, Typography, Grid, useMediaQuery, Switch, FormControlLabel, Tabs, Tab, Divider, Button, IconButton  } from '@mui/material';
+import { Box, Slider, Stack, Typography, Grid, useMediaQuery, Switch, FormControlLabel, Tabs, Tab, Divider, Button, IconButton, CircularProgress  } from '@mui/material';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
 import { GiMeshBall } from "react-icons/gi";
 import { GiCube } from "react-icons/gi";
@@ -7,6 +7,8 @@ import TextureIcon from '@mui/icons-material/Texture';
 import { PiCubeTransparent } from "react-icons/pi";
 import { PiCubeTransparentFill } from "react-icons/pi";
 import { CiFaceSmile } from "react-icons/ci";
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+
 
 import { GiHolosphere } from "react-icons/gi";
 import { GiDividedSquare } from "react-icons/gi";
@@ -26,6 +28,7 @@ const ControlPanel = ({
     rotationXOn, setRotationXOn,
     rotationYOn, setRotationYOn,
     rotationZOn, setRotationZOn,
+    startCapture, captureProgress,
 }) => {
 
 
@@ -34,6 +37,8 @@ const ControlPanel = ({
     const handleToggleExpand = () => {
         setExpanded(!expanded);
     }
+
+    const dlButtonColor = captureProgress === 0 ? 'rgba(100,249,249, 0.5)' : 'rgba(56, 116, 203, 1)';
 
     const handleTabChange = (event, newValue) => {
         setCurrentTab(newValue);
@@ -66,10 +71,35 @@ const ControlPanel = ({
 
 
                 <Box display={'flex'} marginTop={'4%'} flexDirection={'column'}>
-                    <TuneOutlinedIcon 
-                        sx={{ marginLeft: '5%',   fontSize: '40px', color: 'rgba(249,249,249, 1)' }}
-                        onClick={handleToggleExpand}
-                    />
+                    <Box display={'flex'} justifyContent={'space-between'} marginTop={'4%'} flexDirection={'row'}>
+                        <TuneOutlinedIcon 
+                            sx={{ marginLeft: '5%',   fontSize: '40px', color: 'rgba(249,249,249, 1)' }}
+                            onClick={handleToggleExpand}
+                        />
+
+                        <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                            <IconButton onClick={startCapture} sx={{color: dlButtonColor}} 
+                        aria-label="start capture">
+                                <DownloadForOfflineIcon />
+                            </IconButton>
+                            <CircularProgress
+                                variant="determinate"
+                                value={captureProgress}
+                                size={30} // Adjust size to match IconButton
+                                thickness={7} // Adjust thickness of the progress bar
+                                sx={{
+                                    position: 'absolute',
+                                    top: 5,
+                                    left: 5,
+                                    zIndex: 1,
+                                    // Center the progress in the icon button
+                                    transform: 'translate(-50%, -50%)',
+                                    // Allow pointer events to pass through to the button
+                                    pointerEvents: 'none',
+                                }}
+                            />
+                        </Box>
+                    </Box>
 
                     <Tabs
                         value={currentTab}
@@ -109,15 +139,14 @@ const ControlPanel = ({
 
                 { currentTab === 'shape' &&(
                     <Box>
-
                         <Sliders spacing={1}
-                        sliders={[
-                            { label: 'X', value: xMultiplier, setter: setXMultiplier, min: 0.0, max: 20.0, step: 0.1 },
-                            { label: 'Res X', value: xDensity, setter: setXDensity, min: 1.0, max: 80.0, step: 1.0},
-                            { label: 'Y', value: yMultiplier, setter: setYMultiplier, min: 0.0, max: 20.0, step: 0.1 },
-                            { label: 'Res Y', value: yDensity, setter: setYDensity, min: 1.0, max: 80.0, step: 1.0},
-                            { label: 'Strength', value: noiseStrength, setter: setNoiseStrength, min: 0.1, max: 4.0, step: 0.1 },
-                            ]}
+                            sliders={[
+                                { label: 'X', value: xMultiplier, setter: setXMultiplier, min: 0.0, max: 20.0, step: 0.1 },
+                                { label: 'Res X', value: xDensity, setter: setXDensity, min: 1.0, max: 80.0, step: 1.0},
+                                { label: 'Y', value: yMultiplier, setter: setYMultiplier, min: 0.0, max: 20.0, step: 0.1 },
+                                { label: 'Res Y', value: yDensity, setter: setYDensity, min: 1.0, max: 80.0, step: 1.0},
+                                { label: 'Strength', value: noiseStrength, setter: setNoiseStrength, min: 0.1, max: 4.0, step: 0.1 },
+                                ]}
                         />
                         <Divider sx={{ 
                             width: '90%', 
@@ -149,17 +178,17 @@ const ControlPanel = ({
                 )}
 
                 { currentTab === 'motion' &&
-                <Box>
-                <Sliders spacing={1}
-                   sliders={[
-                        { label: 'X°', value: rotationX, setter: setRotationX, min: 0, max:0.05, step: 0.01 },
-                        { label: 'Y°', value: rotationY, setter: setRotationY, min: 0, max:0.05, step: 0.01 },
-                        { label: 'Z°', value: rotationZ, setter: setRotationZ, min: 0, max: 0.05, step: 0.01 },
-                        { label: 'Speed', value: rippleSpeed, setter: setRippleSpeed, min: 0.05, max: 1.5, step: 0.01 },
-                    ]}
-                />
+                    <Box>
+                        <Sliders spacing={1}
+                        sliders={[
+                                { label: 'X°', value: rotationX, setter: setRotationX, min: 0, max:0.05, step: 0.01 },
+                                { label: 'Y°', value: rotationY, setter: setRotationY, min: 0, max:0.05, step: 0.01 },
+                                { label: 'Z°', value: rotationZ, setter: setRotationZ, min: 0, max: 0.05, step: 0.01 },
+                                { label: 'Speed', value: rippleSpeed, setter: setRippleSpeed, min: 0.05, max: 1.5, step: 0.01 },
+                            ]}
+                        />
                     </Box>
-                    }
+                }
 
 
                 { currentTab === 'surface' &&
@@ -179,7 +208,7 @@ const ControlPanel = ({
                                     label="Wireframe"
                             />
                         </Box>
-                         <Box width={'90%'}>
+                        <Box width={'90%'}>
                             <Sliders
                             sliders={[
                                 { label: 'Blend', value: gradientBlend, setter: setGradientBlend, min: 0.1, max: 6.0, step: 0.01}
@@ -212,8 +241,9 @@ const ControlPanel = ({
                         </Box>
                     </Box>
                 }
+                
            </Box>
-
+                    
         </Box>
     )
 };

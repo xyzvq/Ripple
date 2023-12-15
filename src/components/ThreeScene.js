@@ -5,6 +5,8 @@ import ColorButton from './ColorButton';
 import Sliders from './Sliders';
 import {Switch, Typography, FormControlLabel, Box, Grid , Stack, Divider, useMediaQuery, Tabs, Tab,} from '@mui/material';
 import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
+import GIF from 'gif.js';
+
 
 import ControlPanel from './ControlPanel';
 
@@ -15,6 +17,78 @@ const ThreeScene = () => {
     const [shape, setShape] = useState('square');
     const rendererRef = useRef(null);
 
+
+    const [isCapturing, setIsCapturing] = useState(false);
+    const [captureProgress, setCaptureProgress] = useState(0);
+    const [isFinished, setIsFinished] = useState(false);
+    const totalFrames = 60;
+    const maxInterval = 100;
+    const captureIntervalRef = useRef();
+    const frameCountRef = useRef(0);
+
+    const gifRef = useRef(null); // Ref to hold the GIF instance
+
+    const startCapture = () => {
+        setIsCapturing(true);
+        setIsFinished(false);
+        frameCountRef.current = 0;
+        setCaptureProgress(0);
+
+            // Initialize the GIF object here
+            gifRef.current = new GIF({
+                workers: 2,
+                quality: 10,
+                width: window.innerWidth,
+                height: window.innerHeight,
+                workerScript: process.env.PUBLIC_URL + '/gif.worker.js',
+                transparent: 'rgba(0, 0, 0, 0)',
+                debug: true,
+            });
+
+            gifRef.current.on('finished', function(blob) {
+                // window.open(URL.createObjectURL(blob));
+                setIsFinished(true);
+                setCaptureProgress(0);
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.download = 'ripple.gif'; // Set the file name for download
+                a.href = url; // Set href to the object URL
+                // Append the anchor to the body
+                document.body.appendChild(a);
+                // Simulate a click on the anchor
+                a.click();
+                // Remove the anchor from the body
+                document.body.removeChild(a);
+                // Revoke the object URL to free up memory
+                URL.revokeObjectURL(url);
+            });
+
+            // Start capturing frames
+            captureIntervalRef.current = setInterval(() => {
+                if (frameCountRef.current < totalFrames) {
+                    handleCapture();
+                    frameCountRef.current++;
+                } else {
+                    clearInterval(captureIntervalRef.current);
+                    setIsCapturing(false);
+                    handleGif();
+                }
+            }, maxInterval); // Adjust interval as needed
+    };
+
+    const handleCapture = () => {
+        if (rendererRef.current && gifRef.current) {
+            gifRef.current.addFrame(rendererRef.current.domElement, {copy: true, delay: 100});
+            const progress = (frameCountRef.current / totalFrames) * 100;
+            setCaptureProgress(progress);
+        }
+    };
+
+    const handleGif = () => {
+        if (gifRef.current) {
+            gifRef.current.render();
+        }
+    };
 
     //STATES
     const [xMultiplier, setXMultiplier] = useState(10.0);
@@ -46,18 +120,8 @@ const ThreeScene = () => {
     const [rotationZOn, setRotationZOn] = useState(false); // State for rotation speed around Z-axis
 
 
-    function createSphere() {
-        // Sphere geometry with adjustable size
-        const geometry = new THREE.SphereGeometry(1, 20, 20); 
-        // Shader material similar to the square
-        const material = new THREE.ShaderMaterial({
-            wireframe: wireFrame,
-            // vertexShader: sphereVertexShader, // You need to create this shader
-            // fragmentShader: sphereFragmentShader, // You need to create this shader
-            vertexShader,
-            fragmentShader,
-            uniforms: {
-                uTime: { value: 0.1 },
+    const shapeUniforms = {
+        uTime: { value: 0.1 },
                 uSpeedMultiplier: { value: rippleSpeed },
                 uNoiseStrength: { value: noiseStrength },
                 uXMultiplier: { value: xMultiplier },
@@ -69,7 +133,19 @@ const ThreeScene = () => {
                 uColor2Green:   {value: color2Green },
                 uColor2Blue:    {value: color2Blue },
                 uGradientBlend: {value: gradientBlend },
-            },
+    }
+
+    function createSphere() {
+        // Sphere geometry with adjustable size
+        const geometry = new THREE.SphereGeometry(1, 20, 20); 
+        // Shader material similar to the square
+        const material = new THREE.ShaderMaterial({
+            wireframe: wireFrame,
+            // vertexShader: sphereVertexShader, // You need to create this shader
+            // fragmentShader: sphereFragmentShader, // You need to create this shader
+            vertexShader,
+            fragmentShader,
+            uniforms: shapeUniforms,
         });
 
         const sphere = new THREE.Mesh(geometry, material);
@@ -102,27 +178,13 @@ const ThreeScene = () => {
     smileyShape.holes.push(smileyEye2Path);
     smileyShape.holes.push(smileyMouthPath);
 
-
     function createCube() {
         const geometry = new THREE.BoxGeometry(1, 1, 1);
         const material = new THREE.ShaderMaterial({
             wireframe: wireFrame,
             vertexShader,
             fragmentShader,
-            uniforms: {
-                uTime: { value: 0.1 },
-                uSpeedMultiplier: { value: rippleSpeed },
-                uNoiseStrength: { value: noiseStrength },
-                uXMultiplier: { value: xMultiplier },
-                uYMultiplier: { value: yMultiplier },
-                uColor1Red:     {value: color1Red },
-                uColor1Green:   {value: color1Green },
-                uColor1Blue:    {value: color1Blue },
-                uColor2Red:     {value: color2Red },
-                uColor2Green:   {value: color2Green },
-                uColor2Blue:    {value: color2Blue },
-                uGradientBlend: {value: gradientBlend },
-            },
+            uniforms: shapeUniforms,
         });
 
         const cube = new THREE.Mesh(geometry, material);
@@ -136,20 +198,7 @@ const ThreeScene = () => {
             wireframe: wireFrame,
             vertexShader,
             fragmentShader,
-            uniforms: {
-                uTime: { value: 0.1 },
-                uSpeedMultiplier: { value: rippleSpeed },
-                uNoiseStrength: { value: noiseStrength },
-                uXMultiplier: { value: xMultiplier },
-                uYMultiplier: { value: yMultiplier },
-                uColor1Red:     {value: color1Red },
-                uColor1Green:   {value: color1Green },
-                uColor1Blue:    {value: color1Blue },
-                uColor2Red:     {value: color2Red },
-                uColor2Green:   {value: color2Green },
-                uColor2Blue:    {value: color2Blue },
-                uGradientBlend: {value: gradientBlend },
-            },
+            uniforms: shapeUniforms,
         });
 
         const smile = new THREE.Mesh(geometry, material);
@@ -158,38 +207,20 @@ const ThreeScene = () => {
         return smile;
     }
 
-
     function createSquare() {
         const geometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
         const material = new THREE.ShaderMaterial({
             wireframe: wireFrame,
             vertexShader,
             fragmentShader,
-            uniforms: {
-                uTime: { value: 0.1 },
-                uXMultiplier: { value: xMultiplier },
-                uYMultiplier: { value: yMultiplier },
-                uSpeedMultiplier: { value: rippleSpeed },
-                uNoiseStrength: { value: noiseStrength },
-
-                // Color 1
-                uColor1Red:     {value: color1Red },
-                uColor1Green:   {value: color1Green },
-                uColor1Blue:    {value: color1Blue },
-
-                // Color 2
-                uColor2Red:     {value: color2Red },
-                uColor2Green:   {value: color2Green },
-                uColor2Blue:    {value: color2Blue },
-
-                uGradientBlend: {value: gradientBlend },
-            },
+            uniforms: shapeUniforms,
         });
 
         const square = new THREE.Mesh(geometry, material);
         square.position.set(0, 0, 0);
         return square;
     }
+
 
     useEffect(() => {
         if (!mountRef.current) return;
@@ -199,7 +230,11 @@ const ThreeScene = () => {
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, mountRef.current.clientWidth / mountRef.current.clientHeight, 0.1, 1000);
         camera.position.z = 6;
-        const renderer = new THREE.WebGLRenderer();
+
+        //  const canvas = document.createElement('canvas');
+        // canvas.setAttribute('willReadFrequently', 'true');
+
+        const renderer = new THREE.WebGLRenderer({preserveDrawingBuffer: true, willReadFrequently: true});
         renderer.setSize(mountRef.current.clientWidth, mountRef.current.clientHeight);
         mountRef.current.appendChild(renderer.domElement);
         rendererRef.current = renderer;
@@ -283,30 +318,38 @@ const ThreeScene = () => {
 
             mesh.material.uniforms.uGradientBlend.value = gradientBlend;
             
-            // if (shape === 'square') {
-            //     mesh.geometry.dispose();
-            //     const newGeometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
-            //     mesh.geometry = newGeometry;
-            // } else if (shape === 'sphere') {
-            //     mesh.geometry.dispose();
-            //     const newGeometry = new THREE.SphereGeometry(1, 20, 20); 
-            //     mesh.geometry = newGeometry;
-            // }
-            // else if (shape === 'cube') {
-            //     mesh.geometry.dispose();
-            //     const newGeometry = new THREE.BoxGeometry(1, 1, 1);
-            //     mesh.geometry = newGeometry;
-            // }
-            // else if (shape === 'smile') {
-            //     mesh.geometry.dispose();
-            //     const newGeometry = new THREE.ShapeGeometry( smileyShape );
-            //     mesh.geometry = newGeometry;
-            // }
+            if (shape === 'square') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.PlaneGeometry(2, 2, xDensity, yDensity);
+                mesh.geometry = newGeometry;
+            } else if (shape === 'sphere') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.SphereGeometry(1, xDensity, yDensity); 
+                mesh.geometry = newGeometry;
+            }
+            else if (shape === 'cube') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.BoxGeometry(1, 1, 1);
+                mesh.geometry = newGeometry;
+            }
+            else if (shape === 'smile') {
+                mesh.geometry.dispose();
+                const newGeometry = new THREE.ShapeGeometry( smileyShape );
+                mesh.geometry = newGeometry;
+            }
 
             mesh.material.wireframe = wireFrame;
             mesh.material.needsUpdate = true;
         }
     }, [xMultiplier, yMultiplier, rippleSpeed, noiseStrength, color1Red, color1Green, color1Blue, color2Red, color2Green, color2Blue, wireFrame, xDensity, yDensity, gradientBlend, ]);
+
+
+
+    useEffect(() => {
+        if (isCapturing) {
+            startCapture();
+        }
+    }, []);
 
     return (
         <div>
@@ -337,8 +380,11 @@ const ThreeScene = () => {
                     rotationXOn={rotationXOn} setRotationXOn={setRotationXOn}
                     rotationYOn={rotationYOn} setRotationYOn={setRotationYOn}
                     rotationZOn={rotationZOn} setRotationZOn={setRotationZOn}
+                    startCapture={startCapture} captureProgress={captureProgress}
                 />
             </div>
+             {/* <button onClick={() => setIsCapturing(true)}>Start Capture</button> */}
+            
         </div>
     );
 };
