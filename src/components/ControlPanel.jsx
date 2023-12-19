@@ -34,6 +34,7 @@ const ControlPanel = ({
 
     const selectedButtonColor = 'rgba(221, 0, 100, 1.0)';
     const buttonColor = 'rgba(56, 116, 203, 1)';
+
     const handleToggleExpand = () => {
         setExpanded(!expanded);
     }
@@ -48,25 +49,22 @@ const ControlPanel = ({
         setShape(newValue);
     }
 
-
-
-
     return (
         <Box>
             <Box sx={{
                 display: 'flex',
                 position: 'absolute',  
-                top: '5%',  
+                top: isMobile ? '0%' : '5%',
                 left: '1%',  
                 zIndex: 2,  
-                width: expanded ? isMobile ? '90%' : '22%' : '42px', 
-                height: expanded ? '90%' : '42px',
+                width: expanded ? isMobile ? '97%' : '22%' : '42px', 
+                height: expanded ? '99dvh' : '42px',
                 flexDirection: 'column', 
                 border: '2px solid rgba(100, 100, 200, 0.4)', 
                 borderRadius: '12px', 
                 backgroundColor: 'rgba(0, 0, 0, 0.2)', 
                 transition: 'width 0.5s, height 0.5s',  
-                overflow: isMobile ? 'scroll' : 'hidden',
+                overflow: isMobile ? (expanded ? 'scroll' : 'hidden') : 'hidden',
                 }}>
 
 
@@ -157,8 +155,7 @@ const ControlPanel = ({
                             height: '0.5px' 
                         }} />
                         
-                        <Box display={'flex'} justifyContent={'space-evenly'} marginTop={'5%'}>
-                            
+                        <Box display={'flex'} justifyContent={'space-evenly'} marginTop={'1%'}>
                             <IconButton aria-label="square" onClick={(e) => handleShapeChange(e, 'square')}   style={{ color: shape === 'square' ? selectedButtonColor : buttonColor }} >
                                 <GiDividedSquare  className="shapeButton"/>
                             </IconButton>
