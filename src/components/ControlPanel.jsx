@@ -58,7 +58,7 @@ const ControlPanel = ({
                 left: '1%',  
                 zIndex: 2,  
                 width: expanded ? isMobile ? '97%' : '22%' : '42px', 
-                height: expanded ? '99dvh' : '42px',
+                height: expanded ?  isMobile ?  '99dvh' : '90dvh' : '42px',
                 flexDirection: 'column', 
                 border: '2px solid rgba(100, 100, 200, 0.4)', 
                 borderRadius: '12px', 
