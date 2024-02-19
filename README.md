@@ -6,5 +6,3 @@ Features
 Interactive UI: Easy-to-use interface for altering the properties of 3D shapes.
 Customizable Attributes: Change shape, color, motion, and more attributes of the shapes.
 Responsive Design: Optimized for both desktop and mobile devices.
-Installation
-To install the application, follow these steps:
